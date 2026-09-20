@@ -26,11 +26,33 @@
     window.speechSynthesis.speak(u);
   };
 
+  // 依次朗读多段（用于「音素 → 例词」锚定：TTS 对孤立音素只是近似，
+  // 后面的整词保证学习者听到目标音的真实语境）
+  window.speakSequence = function (parts) {
+    if (!("speechSynthesis" in window)) return;
+    var list = parts.slice();
+    function next() {
+      if (!list.length) return;
+      var p = list.shift();
+      var u = new SpeechSynthesisUtterance(p.text);
+      u.lang = "en-US";
+      u.rate = p.rate != null ? p.rate : 0.85;
+      var v = pickVoice();
+      if (v) u.voice = v;
+      u.onend = next;
+      u.onerror = next;
+      window.speechSynthesis.speak(u);
+    }
+    window.speechSynthesis.cancel();
+    next();
+  };
+
   // 常用音素的 TTS 近似写法（真人示范请用 BBC Sounds of English 校准）
   window.SOUNDS = { s: "sss", a: "ah", t: "tuh", p: "puh", i: "ih", n: "nnn", m: "mmm", d: "duh" };
 
   // 点击 .sound-card / .phoneme-btn / .speak-btn 自动发音：
   //   data-say="文本" data-rate="0.6"；.sound-card/.phoneme-btn 无 data-say 时按字母查 SOUNDS
+  //   带 data-word 时播「音素 → 例词」两段，例词锚定真实发音
   document.addEventListener("click", function (e) {
     var el = e.target.closest(".sound-card, .phoneme-btn, .speak-btn");
     if (!el) return;
@@ -40,6 +62,11 @@
       say = (window.SOUNDS && window.SOUNDS[letter]) || letter;
     }
     var rate = parseFloat(el.getAttribute("data-rate") || "0.6");
-    window.speak(say, { rate: rate });
+    var word = el.getAttribute("data-word");
+    if (word) {
+      window.speakSequence([{ text: say, rate: rate }, { text: word, rate: 0.75 }]);
+    } else {
+      window.speak(say, { rate: rate });
+    }
   });
 })();
