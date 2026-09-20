@@ -1,0 +1,7 @@
+node_modules/
+dist/
+app/data/*.db
+*.local
+.DS_Store
+shot-*.png
+.playwright-mcp/
