@@ -9,6 +9,8 @@ import { Progress } from '@/components/ui/progress'
 
 const TOTAL = 10
 const NICKNAME_KEY = 'phonics-nickname'
+// 第 1-2 课已学音素（Letters and Sounds Phase 2 · Set 1-2）
+const LEARNED_LETTERS = ['s', 'a', 't', 'p', 'i', 'n', 'm', 'd']
 
 interface Question {
   answer: Phoneme
@@ -42,6 +44,7 @@ export default function Practice() {
   const [picked, setPicked] = useState<string | null>(null)
   const [score, setScore] = useState(0)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
+  const [scope, setScope] = useState<'learned' | 'all'>('learned')
 
   useEffect(() => {
     fetchPhonemes().then(setPhonemes).catch(() => setPhonemes([]))
@@ -54,8 +57,12 @@ export default function Practice() {
   )
 
   function start() {
-    if (phonemes.length < 4) return
-    setQuestions(buildQuestions(phonemes))
+    const pool =
+      scope === 'learned'
+        ? phonemes.filter((p) => LEARNED_LETTERS.includes(p.letter))
+        : phonemes
+    if (pool.length < 4) return
+    setQuestions(buildQuestions(pool))
     setQi(0)
     setScore(0)
     setPicked(null)
@@ -115,6 +122,17 @@ export default function Practice() {
             <p className="text-sm text-muted-foreground">
               每题播放一个「字母音」，从 4 个字母里选出刚才听到的那个。答对会自动读出一个例词。
             </p>
+            <div className="space-y-1.5">
+              <Label>练习范围</Label>
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" variant={scope === 'learned' ? 'default' : 'outline'} onClick={() => setScope('learned')}>
+                  已学 8 音（s a t p i n m d）
+                </Button>
+                <Button size="sm" variant={scope === 'all' ? 'default' : 'outline'} onClick={() => setScope('all')}>
+                  全部 26 音
+                </Button>
+              </div>
+            </div>
             <div className="space-y-1.5">
               <Label htmlFor="nickname">你的昵称（成绩将进入排行榜）</Label>
               <Input

@@ -16,6 +16,14 @@ export interface LeaderRow {
   last_played: string
 }
 
+export interface WordItem {
+  word: string
+  letters: string[]
+  says: string[]
+  meaning: string
+  level: number
+}
+
 async function json<T>(res: Response): Promise<T> {
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
   return res.json() as Promise<T>
@@ -23,6 +31,10 @@ async function json<T>(res: Response): Promise<T> {
 
 export function fetchPhonemes(): Promise<Phoneme[]> {
   return fetch('/api/phonemes').then((r) => json<Phoneme[]>(r))
+}
+
+export function fetchWords(): Promise<WordItem[]> {
+  return fetch('/api/words').then((r) => json<WordItem[]>(r))
 }
 
 export function fetchLeaderboard(): Promise<LeaderRow[]> {

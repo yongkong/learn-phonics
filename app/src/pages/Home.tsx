@@ -12,9 +12,9 @@ const steps = [
   },
   {
     no: '第 2 课',
-    title: 'i, n, m, d · CVC 拼读机',
-    desc: '规划中：把 8 个字母拼成词的合成游戏（网站将新增「拼读机」）。',
-    done: false,
+    title: 'i, n, m, d · CVC 拼读',
+    desc: '已上线：课程 lessons/0002 + 网站「拼读机」——逐音点读、慢速合成、释义揭示。',
+    done: true,
   },
   {
     no: '第 3 课',
@@ -37,15 +37,22 @@ export default function Home() {
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Button size="lg" render={<Link to="/learn" />}>开始学习字母音</Button>
+          <Button size="lg" variant="outline" render={<Link to="/blend" />}>🧩 试试拼读机</Button>
           <Button size="lg" variant="outline" render={<Link to="/practice" />}>直接去练习 →</Button>
         </div>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader>
             <CardTitle>🔊 字母音图表</CardTitle>
             <CardDescription>26 个字母 + 例词，点一下就发音，随时随地磨耳朵。</CardDescription>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>🧩 拼读机</CardTitle>
+            <CardDescription>逐音点读、慢速合成，把字母「焊」成单词。</CardDescription>
           </CardHeader>
         </Card>
         <Card>

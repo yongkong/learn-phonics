@@ -1,6 +1,7 @@
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import Learn from './pages/Learn'
+import Blend from './pages/Blend'
 import Practice from './pages/Practice'
 import Leaderboard from './pages/Leaderboard'
 
@@ -22,6 +23,7 @@ export default function App() {
             </NavLink>
             <nav className="flex items-center gap-1">
               <NavLink to="/learn" className={linkClass}>字母音图表</NavLink>
+              <NavLink to="/blend" className={linkClass}>拼读机</NavLink>
               <NavLink to="/practice" className={linkClass}>听音练习</NavLink>
               <NavLink to="/leaderboard" className={linkClass}>排行榜</NavLink>
             </nav>
@@ -31,6 +33,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/learn" element={<Learn />} />
+            <Route path="/blend" element={<Blend />} />
             <Route path="/practice" element={<Practice />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
           </Routes>

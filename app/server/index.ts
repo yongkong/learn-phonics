@@ -31,6 +31,13 @@ db.exec(`
     total      INTEGER NOT NULL,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+  CREATE TABLE IF NOT EXISTS words (
+    word    TEXT PRIMARY KEY,
+    letters TEXT NOT NULL,
+    says    TEXT NOT NULL,
+    meaning TEXT NOT NULL,
+    level   INTEGER NOT NULL
+  );
 `)
 
 // Letters and Sounds (DfE 2007) Phase 2 Set 1-5 + Phase 3 字母集；ord = 教学顺序（SATPIN 优先）
@@ -74,6 +81,42 @@ if (phonemeCount === 0) {
   console.log(`Seeded ${SEED.length} phonemes.`)
 }
 
+// CVC 词库：level 1 = 只用 Set 1 (s,a,t,p)；level 2 = 加 Set 2 (i,n,m,d)
+type WordSeed = [word: string, letters: string[], meaning: string, level: number]
+const SAYS: Record<string, string> = { s: 'sss', a: 'ah', t: 'tuh', p: 'puh', i: 'ih', n: 'nnn', m: 'mmm', d: 'duh' }
+const WORDS: WordSeed[] = [
+  ['sat', ['s', 'a', 't'], '坐（sit 的过去式）', 1],
+  ['tap', ['t', 'a', 'p'], '轻敲', 1],
+  ['pat', ['p', 'a', 't'], '轻拍', 1],
+  ['sit', ['s', 'i', 't'], '坐', 2],
+  ['sip', ['s', 'i', 'p'], '小口喝', 2],
+  ['tip', ['t', 'i', 'p'], '尖端；小费', 2],
+  ['dip', ['d', 'i', 'p'], '蘸', 2],
+  ['pit', ['p', 'i', 't'], '坑', 2],
+  ['nap', ['n', 'a', 'p'], '小睡', 2],
+  ['nip', ['n', 'i', 'p'], '捏；掐', 2],
+  ['pan', ['p', 'a', 'n'], '平底锅', 2],
+  ['man', ['m', 'a', 'n'], '男人', 2],
+  ['map', ['m', 'a', 'p'], '地图', 2],
+  ['tin', ['t', 'i', 'n'], '锡罐', 2],
+  ['pin', ['p', 'i', 'n'], '大头针', 2],
+  ['pad', ['p', 'a', 'd'], '便签本', 2],
+  ['dad', ['d', 'a', 'd'], '爸爸', 2],
+  ['sad', ['s', 'a', 'd'], '悲伤的', 2],
+  ['mad', ['m', 'a', 'd'], '疯狂的', 2],
+  ['dim', ['d', 'i', 'm'], '昏暗的', 2],
+]
+
+const { c: wordCount } = db.prepare('SELECT COUNT(*) AS c FROM words').get() as { c: number }
+if (wordCount === 0) {
+  const insWord = db.prepare('INSERT INTO words (word, letters, says, meaning, level) VALUES (?, ?, ?, ?, ?)')
+  for (const [word, letters, meaning, level] of WORDS) {
+    const says = letters.map((l) => SAYS[l] ?? l)
+    insWord.run(word, JSON.stringify(letters), JSON.stringify(says), meaning, level)
+  }
+  console.log(`Seeded ${WORDS.length} words.`)
+}
+
 const app = new Hono()
 
 app.get('/api/health', (c) => c.json({ ok: true }))
@@ -110,6 +153,17 @@ app.get('/api/leaderboard', (c) => {
     LIMIT 20
   `).all()
   return c.json(rows)
+})
+
+app.get('/api/words', (c) => {
+  const rows = db.prepare('SELECT * FROM words ORDER BY level, word').all() as Array<{
+    word: string; letters: string; says: string; meaning: string; level: number
+  }>
+  return c.json(rows.map((r) => ({
+    ...r,
+    letters: JSON.parse(r.letters) as string[],
+    says: JSON.parse(r.says) as string[],
+  })))
 })
 
 // 生产模式：伺服前端构建产物 + SPA 回退
