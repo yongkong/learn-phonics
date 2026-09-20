@@ -7,37 +7,43 @@ const steps = [
   {
     no: '第 1 课',
     title: '字母名 ≠ 字母音（s a t p）',
-    desc: '已上线：26 个字母音图表 + 听音辨字母练习。课程在仓库 lessons/ 目录。',
+    desc: '26 个字母音图表 + 听音辨字母练习的起点。',
+    href: '/teach/lessons/0001-letter-sounds-satp.html',
     done: true,
   },
   {
     no: '第 2 课',
     title: 'i, n, m, d · CVC 拼读',
-    desc: '已上线：课程 lessons/0002 + 网站「拼读机」——逐音点读、慢速合成、释义揭示。',
+    desc: '配合「拼读机」——逐音点读、慢速合成、释义揭示。',
+    href: '/teach/lessons/0002-phonemes-imnd-cvc.html',
     done: true,
   },
   {
     no: '第 3 课',
     title: 'g, o, c, k · 听音写词',
-    desc: '已上线：课程 lessons/0003 + 网站「拼写挑战」——听词拼字母，练「听音能写」。',
+    desc: '配合「拼写挑战」——听词拼字母，练「听音能写」。',
+    href: '/teach/lessons/0003-phonemes-gock-segmenting.html',
     done: true,
   },
   {
     no: '第 4 课',
     title: 'ck, e, u, r · 第一个二字母组合',
-    desc: '已上线：课程 lessons/0004——digraph「两个字母手拉手发一个音」。',
+    desc: 'digraph：两个字母手拉手只发一个音。',
+    href: '/teach/lessons/0004-ck-e-u-r-digraph.html',
     done: true,
   },
   {
     no: '第 5 课',
     title: 'h, b, f, l · 双写字母 ff/ll/ss',
-    desc: '已上线：课程 lessons/0005——Set 5 收官，双写仍发一个音。',
+    desc: 'Set 5 收官，双写仍发一个音。',
+    href: '/teach/lessons/0005-h-b-f-l-double-letters.html',
     done: true,
   },
   {
     no: '第 6 课',
     title: 'j, v, w, x, y, z, q · 26 音全解锁',
-    desc: '已上线：课程 lessons/0006——完成全部 26 个单字母音素，可以读真分级读物了。',
+    desc: '完成全部 26 个单字母音素，可以读真分级读物了。',
+    href: '/teach/lessons/0006-j-v-w-x-y-z-q-complete.html',
     done: true,
   },
 ]
@@ -96,22 +102,31 @@ export default function Home() {
       <section>
         <h2 className="mb-4 text-xl font-bold">学习路线（= 网站路线）</h2>
         <div className="space-y-3">
-          {steps.map((s) => (
-            <Card key={s.no}>
-              <CardContent className="flex items-start justify-between gap-4 py-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold">{s.no}</span>
-                    <span className="text-foreground/90">{s.title}</span>
+          {steps.map((s) => {
+            const card = (
+              <Card className="h-full transition-shadow group-hover/card:shadow-md">
+                <CardContent className="flex items-start justify-between gap-4 py-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold group-hover/card:underline">{s.no}</span>
+                      <span className="text-foreground/90 group-hover/card:underline">{s.title}</span>
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">{s.desc}</p>
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{s.desc}</p>
-                </div>
-                <Badge variant={s.done ? 'default' : 'secondary'} className="shrink-0">
-                  {s.done ? '已上线' : '规划中'}
-                </Badge>
-              </CardContent>
-            </Card>
-          ))}
+                  <Badge variant={s.done ? 'default' : 'secondary'} className="shrink-0">
+                    {s.done ? '去上课 →' : '规划中'}
+                  </Badge>
+                </CardContent>
+              </Card>
+            )
+            return s.done ? (
+              <a key={s.no} href={s.href} className="group/card block">
+                {card}
+              </a>
+            ) : (
+              <div key={s.no}>{card}</div>
+            )
+          })}
         </div>
       </section>
     </div>

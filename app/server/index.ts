@@ -229,6 +229,15 @@ app.get('/api/words', (c) => {
   })))
 })
 
+// 教学内容静态伺服：课程/速查表/共享组件，只暴露这三个目录
+const repoRoot = path.relative(process.cwd(), path.join(__dirname, '..', '..'))
+for (const dir of ['lessons', 'reference', 'assets']) {
+  app.use(`/teach/${dir}/*`, serveStatic({
+    root: repoRoot,
+    rewriteRequestPath: (p) => p.replace(/^\/teach/, ''),
+  }))
+}
+
 // 生产模式：伺服前端构建产物 + SPA 回退
 app.use('*', serveStatic({ root: path.relative(process.cwd(), distDir) || '.' }))
 app.get('*', serveStatic({ path: path.join(distDir, 'index.html') }))

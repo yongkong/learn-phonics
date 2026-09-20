@@ -155,6 +155,37 @@ th { background: var(--accent-soft); }
 }
 .speak-btn:hover { border-color: var(--blue); }
 
+/* 课程页顶部导航（assets/lesson-nav.js 注入） */
+.lesson-topnav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding: 0.55rem 1.2rem;
+  background: rgba(253, 252, 248, 0.94);
+  backdrop-filter: blur(6px);
+  border-bottom: 2px solid var(--line);
+  font-size: 0.9rem;
+}
+.lesson-topnav .brand { font-weight: 700; color: var(--ink); text-decoration: none; }
+.lesson-topnav nav { display: flex; gap: 0.15rem; flex-wrap: wrap; }
+.lesson-topnav nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+}
+.lesson-topnav nav a:hover { background: var(--accent-soft); color: var(--accent); }
+.lesson-topnav .pager { display: flex; align-items: center; gap: 0.6rem; }
+.lesson-topnav .pager a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.lesson-topnav .pager a:hover { text-decoration: underline; }
+.lesson-topnav .pager a.disabled { color: var(--line); pointer-events: none; }
+.lesson-topnav .pager .pos { color: var(--muted); font-size: 0.8rem; }
+
 .lesson-footer {
   margin-top: 3.5rem; padding-top: 1.2rem;
   border-top: 2px solid var(--line);
@@ -178,6 +209,7 @@ details.reveal .answer {
 
 @media print {
   body { background: #fff; font-size: 12pt; }
+  .lesson-topnav { display: none; }
   .sound-card, .phoneme-btn, .btn, .speak-btn { box-shadow: none; }
   .quiz-options { gap: 0.3rem; }
   a { color: inherit; text-decoration: none; }
