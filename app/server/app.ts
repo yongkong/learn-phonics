@@ -1,39 +1,21 @@
 import { Hono } from 'hono'
-import { db, ready } from './db'
+import { getDb, ready, storage } from './db'
+import { PHONEMES, WORDS } from './content'
 
-// 纯 API 应用（本地由 server/main.ts 伺服静态；Vercel 由 api/[...route].ts 承载）
+// API 应用：音素/词库来自静态内容（任何部署都可用）；
+// 成绩记录依赖存储（本地文件 / Turso，Vercel 未配 Turso 时返回 503）。
 export function createApp() {
   const app = new Hono()
 
-  app.get('/api/health', (c) => c.json({ ok: true }))
+  app.get('/api/health', (c) => c.json({ ok: true, storage }))
 
-  app.get('/api/phonemes', async (c) => {
-    await ready
-    const rs = await db.execute('SELECT * FROM phonemes ORDER BY ord')
-    return c.json(rs.rows.map((r) => ({
-      letter: String(r.letter),
-      ord: Number(r.ord),
-      sound: String(r.sound),
-      say: String(r.say),
-      words: JSON.parse(String(r.words)) as string[],
-      phase: Number(r.phase),
-      set_no: r.set_no == null ? null : Number(r.set_no),
-    })))
-  })
+  app.get('/api/phonemes', (c) => c.json(PHONEMES))
 
-  app.get('/api/words', async (c) => {
-    await ready
-    const rs = await db.execute('SELECT * FROM words ORDER BY level, word')
-    return c.json(rs.rows.map((r) => ({
-      word: String(r.word),
-      letters: JSON.parse(String(r.letters)) as string[],
-      says: JSON.parse(String(r.says)) as string[],
-      meaning: String(r.meaning),
-      level: Number(r.level),
-    })))
-  })
+  app.get('/api/words', (c) => c.json(WORDS))
 
   app.post('/api/progress', async (c) => {
+    const db = getDb()
+    if (!db) return c.json({ error: 'storage not configured' }, 503)
     await ready
     const body = await c.req.json<Record<string, unknown>>()
     const nickname = String(body.nickname ?? '').trim().slice(0, 20)
@@ -49,6 +31,8 @@ export function createApp() {
   })
 
   app.get('/api/leaderboard', async (c) => {
+    const db = getDb()
+    if (!db) return c.json([])
     await ready
     const rs = await db.execute(`
       SELECT nickname,
