@@ -1,7 +1,6 @@
 node_modules/
 dist/
 app/data/
-app/public/teach/
 app/server.log
 *.local
 .DS_Store
