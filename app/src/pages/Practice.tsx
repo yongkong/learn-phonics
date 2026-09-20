@@ -9,8 +9,10 @@ import { Progress } from '@/components/ui/progress'
 
 const TOTAL = 10
 const NICKNAME_KEY = 'phonics-nickname'
-// 第 1-2 课已学音素（Letters and Sounds Phase 2 · Set 1-2）
-const LEARNED_LETTERS = ['s', 'a', 't', 'p', 'i', 'n', 'm', 'd']
+// 已学音素 = Letters and Sounds Phase 2 · Set 1-3（第 3 课进度）；之后课程解锁更多
+function isLearned(p: Phoneme) {
+  return p.phase === 2 && (p.set_no ?? 9) <= 3
+}
 
 interface Question {
   answer: Phoneme
@@ -57,10 +59,7 @@ export default function Practice() {
   )
 
   function start() {
-    const pool =
-      scope === 'learned'
-        ? phonemes.filter((p) => LEARNED_LETTERS.includes(p.letter))
-        : phonemes
+    const pool = scope === 'learned' ? phonemes.filter(isLearned) : phonemes
     if (pool.length < 4) return
     setQuestions(buildQuestions(pool))
     setQi(0)
@@ -126,7 +125,7 @@ export default function Practice() {
               <Label>练习范围</Label>
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" variant={scope === 'learned' ? 'default' : 'outline'} onClick={() => setScope('learned')}>
-                  已学 8 音（s a t p i n m d）
+                  已学 12 音（Set 1–3）
                 </Button>
                 <Button size="sm" variant={scope === 'all' ? 'default' : 'outline'} onClick={() => setScope('all')}>
                   全部 26 音

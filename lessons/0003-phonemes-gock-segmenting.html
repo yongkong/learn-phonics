@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 3 课 · g, o, c, k 与「听音写词」</title>
+<link rel="stylesheet" href="../assets/phonics.css">
+</head>
+<body>
+<main>
+  <span class="kicker">自然拼读 · Learn Phonics</span>
+  <h1>第 3 课 · g, o, c, k 与「听音写词」</h1>
+  <p class="muted">g · o · c · k &nbsp;|&nbsp; 预计用时 10 分钟 &nbsp;|&nbsp; 学完你将：掌握 12 个音素，并解锁反向技能「听音写词」</p>
+
+  <h2>1 · 热身复习：前两天学的还牢吗？</h2>
+  <p>老规矩——先凭记忆答 4 题，别翻笔记：</p>
+  <div id="review"></div>
+
+  <h2>2 · 新朋友：g, o, c, k</h2>
+  <p>学完这组（《Letters and Sounds》Set 3），你手里就有 <strong>12 个音素</strong>。其中藏着一个有趣的事实：<strong>c 和 k 发的是同一个音</strong>。</p>
+  <table>
+    <tr><th>字母</th><th>字母名（背口诀用）</th><th>字母音（拼读用）</th><th>发音提示</th></tr>
+    <tr><td><strong>g</strong></td><td>/dʒiː/ 「记」</td><td class="ph">/g/</td><td>喉咙要振动（浊音）——手放喉咙上感受嗡嗡；和拼音 g 不同，不要拖出「呃」</td></tr>
+    <tr><td><strong>o</strong></td><td>/əʊ/ 「欧」</td><td class="ph">/ɒ/</td><td>短促圆嘴的「奥」——不是字母名「欧」，也比拼音 o 更短更开</td></tr>
+    <tr><td><strong>c</strong></td><td>/siː/ 「西」</td><td class="ph">/k/</td><td>和 k 同音！短促爆破、不带元音。短词里 c 常出现在 a/o/u 前</td></tr>
+    <tr><td><strong>k</strong></td><td>/keɪ/ 「开」</td><td class="ph">/k/</td><td>和 c 同音。短词里 k 常出现在 e/i 前（如 kid, kit）</td></tr>
+  </table>
+  <div class="card blue">
+    <p class="card-title">🔊 点卡片：先听字母音，再听例词锚定</p>
+    <div class="sound-grid">
+      <div class="sound-card" role="button" tabindex="0" data-word="dig"><span class="letter">g</span><span class="sound">/g/</span><span class="hint">听音+例词</span></div>
+      <div class="sound-card" role="button" tabindex="0" data-word="dog"><span class="letter">o</span><span class="sound">/ɒ/</span><span class="hint">听音+例词</span></div>
+      <div class="sound-card" role="button" tabindex="0" data-word="cat"><span class="letter">c</span><span class="sound">/k/</span><span class="hint">听音+例词</span></div>
+      <div class="sound-card" role="button" tabindex="0" data-word="kid"><span class="letter">k</span><span class="sound">/k/</span><span class="hint">听音+例词</span></div>
+    </div>
+    <p class="muted" style="font-size:.85rem">「清音 / 浊音」概念见<a href="../reference/glossary.html">术语表</a>：/t/-/d/、/k/-/g/ 都是一对——发音位置相同，只差声带振不振动。</p>
+  </div>
+  <cite>来源：<a href="https://assets.publishing.service.gov.uk/media/5a7cd353e5274a2acd0b0c05/letters_and_sounds_-_dfes-00281-2007.pdf">Letters and Sounds (DfES, 2007)</a>，Phase 2 · Set 3 = g, o, c, k。</cite>
+
+  <h2>3 · 拼读练习：12 个音素的新组合</h2>
+  <p>先自己小声连读，再点整词验证。注意新元音 /ɒ/：</p>
+
+  <div class="card">
+    <p class="card-title">d + o + g</p>
+    <div class="blend-row">
+      <button class="phoneme-btn" type="button">d</button>
+      <button class="phoneme-btn" type="button">o</button>
+      <button class="phoneme-btn" type="button">g</button>
+      <span class="arrow">→</span>
+      <button class="btn primary" type="button" data-say="dog" data-rate="0.85">dog 🔊</button>
+      <span class="word-result">dog</span> <span class="muted">狗</span>
+    </div>
+  </div>
+  <div class="card">
+    <p class="card-title">c + a + t</p>
+    <div class="blend-row">
+      <button class="phoneme-btn" type="button">c</button>
+      <button class="phoneme-btn" type="button">a</button>
+      <button class="phoneme-btn" type="button">t</button>
+      <span class="arrow">→</span>
+      <button class="btn primary" type="button" data-say="cat" data-rate="0.85">cat 🔊</button>
+      <span class="word-result">cat</span> <span class="muted">猫</span>
+    </div>
+  </div>
+  <div class="card">
+    <p class="card-title">g + o + t</p>
+    <div class="blend-row">
+      <button class="phoneme-btn" type="button">g</button>
+      <button class="phoneme-btn" type="button">o</button>
+      <button class="phoneme-btn" type="button">t</button>
+      <span class="arrow">→</span>
+      <button class="btn primary" type="button" data-say="got" data-rate="0.85">got 🔊</button>
+      <span class="word-result">got</span> <span class="muted">得到（get 的过去式）</span>
+    </div>
+  </div>
+  <div class="card">
+    <p class="card-title">k + i + d</p>
+    <div class="blend-row">
+      <button class="phoneme-btn" type="button">k</button>
+      <button class="phoneme-btn" type="button">i</button>
+      <button class="phoneme-btn" type="button">d</button>
+      <span class="arrow">→</span>
+      <button class="btn primary" type="button" data-say="kid" data-rate="0.85">kid 🔊</button>
+      <span class="word-result">kid</span> <span class="muted">小孩</span>
+    </div>
+  </div>
+  <div class="card">
+    <p class="card-title">p + o + t</p>
+    <div class="blend-row">
+      <button class="phoneme-btn" type="button">p</button>
+      <button class="phoneme-btn" type="button">o</button>
+      <button class="phoneme-btn" type="button">t</button>
+      <span class="arrow">→</span>
+      <button class="btn primary" type="button" data-say="pot" data-rate="0.85">pot 🔊</button>
+      <span class="word-result">pot</span> <span class="muted">锅</span>
+    </div>
+  </div>
+
+  <h2>4 · 新技能：听音写词（segmenting）</h2>
+  <p>到目前为止你练的都是「见字母 → 读出词」（blending）。今天反过来：<strong>听到词 → 拆成音素 → 写出字母</strong>。这是拼写和听写的能力底座，也是我们使命里「听音能写」的另一半。</p>
+  <p>流程演示——先点 🔊 听整词，心里把它拆成三个音，再点「看答案」对照：</p>
+
+  <div class="card">
+    <p class="card-title">🔊 cat（猫）</p>
+    <div class="blend-row">
+      <button class="speak-btn" type="button" data-say="cat" data-rate="0.85">🔊 听词</button>
+      <span class="arrow">→</span>
+      <span class="muted">心里拆：/k/ · /æ/ · /t/</span>
+    </div>
+    <details class="reveal">
+      <summary>看答案</summary>
+      <span class="answer">c · a · t</span>
+    </details>
+  </div>
+  <div class="card">
+    <p class="card-title">🔊 pig（猪）</p>
+    <div class="blend-row">
+      <button class="speak-btn" type="button" data-say="pig" data-rate="0.85">🔊 听词</button>
+      <span class="arrow">→</span>
+      <span class="muted">心里拆：/p/ · /ɪ/ · /g/</span>
+    </div>
+    <details class="reveal">
+      <summary>看答案</summary>
+      <span class="answer">p · i · g</span>
+    </details>
+  </div>
+  <div class="card">
+    <p class="card-title">🔊 mop（拖把）</p>
+    <div class="blend-row">
+      <button class="speak-btn" type="button" data-say="mop" data-rate="0.85">🔊 听词</button>
+      <span class="arrow">→</span>
+      <span class="muted">心里拆：/m/ · /ɒ/ · /p/</span>
+    </div>
+    <details class="reveal">
+      <summary>看答案</summary>
+      <span class="answer">m · o · p</span>
+    </details>
+  </div>
+  <p class="muted">网站今天上线了「<a href="/spell">拼写挑战</a>」：听词 → 按顺序点字母，专门练这个技能。</p>
+
+  <h2>5 · 今日测验：新旧混着考</h2>
+  <div id="quiz"></div>
+
+  <div class="card green">
+    <p class="card-title">📖 课后 5 分钟（今天就做）</p>
+    <p><strong>主练：</strong>网站「<a href="/spell">拼写挑战</a>」玩一轮（8 个词，Level 默认已含新学的 g, o, c, k）。</p>
+    <p><strong>主读：</strong><em>Letters and Sounds</em> (DfE 2007) Phase 2 里 Set 3（g, o, c, k）的讲解与示例词部分。</p>
+    <p><strong>生活任务：</strong>听到身边任何英文短词，试着在心里把它拆成音素——今天起你两个方向都会了。</p>
+  </div>
+
+  <div class="lesson-footer">
+    <p>💬 <strong>有任何不明白的，直接回到 ZCode 问你的 AI 老师</strong>——比如「c 和 k 到底什么时候用哪个」「/ɒ/ 和拼音 o 差在哪」。</p>
+    <p>📚 术语卡壳？查 <a href="../reference/glossary.html">术语速查表</a>。上一课：<a href="0002-phonemes-imnd-cvc.html">第 2 课 · i, n, m, d 与 CVC 拼读</a>。</p>
+    <p class="next-link">下一课预告：<strong>第 4 课 · ck, e, u, r</strong>——遇见第一个「二字母组合」（digraph）：两个字母手拉手只发一个音。</p>
+  </div>
+</main>
+
+<script src="../assets/speak.js"></script>
+<script src="../assets/quiz.js"></script>
+<script>
+  PhonicsQuiz(document.getElementById("review"), {
+    id: "lesson-0003-review",
+    questions: [
+      { prompt: "复习：闭紧嘴巴哼出的 /mmm/ 是哪个字母？",
+        options: ["m", "n", "d", "t"], answer: 0,
+        explain: "嘴闭紧、喉咙震动——m。" },
+      { prompt: "复习：点🔊听慢速拼读，是哪个单词？",
+        speak: "sss ih tuh", rate: "0.6",
+        options: ["sit", "sat", "tip", "pin"], answer: 0,
+        explain: "s + i + t，坐。" },
+      { prompt: "复习：先点🔊听音，再选出刚才听到的字母：",
+        speak: "ih", rate: "0.55",
+        options: ["i", "n", "m", "d"], answer: 0,
+        explain: "/ɪ/：短促放松的「衣」。" },
+      { prompt: "复习：哪个单词的意思是「轻敲」？",
+        options: ["tap", "nap", "pat", "sip"], answer: 0,
+        explain: "t-a-p，轻敲。" }
+    ]
+  });
+
+  PhonicsQuiz(document.getElementById("quiz"), {
+    id: "lesson-0003",
+    questions: [
+      { prompt: "「狗」dog 的开头音 /g/，是哪个字母写的？",
+        options: ["g", "d", "o", "c"], answer: 0,
+        explain: "g 的字母音，喉咙振动。" },
+      { prompt: "c 和 k 的字母音是什么关系？",
+        options: ["完全相同", "一清一浊", "一长一短", "毫无关系"], answer: 0,
+        explain: "都发 /k/。短词里 c 常在 a/o/u 前，k 常在 e/i 前——但音完全一样。" },
+      { prompt: "点🔊听慢速拼读，是哪个单词？",
+        speak: "duh oh guh", rate: "0.6",
+        options: ["dog", "dot", "dig", "cog"], answer: 0,
+        explain: "d + o + g，狗。" },
+      { prompt: "点🔊听慢速拼读，是哪个单词？",
+        speak: "kuh oh tuh", rate: "0.6",
+        options: ["cot", "cat", "cop", "got"], answer: 0,
+        explain: "c + o + t，简易小床。" },
+      { prompt: "和 /k/ 发音位置相同、但声带振动（浊音）的是？",
+        options: ["g", "k", "t", "o"], answer: 0,
+        explain: "/k/-/g/ 是清浊对立对，就像 /t/-/d/。" },
+      { prompt: "点🔊听整词，它由哪三个音素组成？",
+        speak: "mop", rate: "0.85",
+        options: ["m-o-p", "p-o-m", "t-o-p", "m-o-t"], answer: 0,
+        explain: "听音写词：/m/-/ɒ/-/p/ → m、o、p。" }
+    ]
+  });
+</script>
+</body>
+</html>

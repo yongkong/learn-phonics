@@ -1,14 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchWords, type WordItem } from '@/lib/api'
 import { speak, speakSequence } from '@/lib/speak'
+import { WORD_LEVELS } from '@/lib/levels'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-
-const LEVELS: Array<{ value: number | 'all'; label: string }> = [
-  { value: 1, label: 'Level 1 · s a t p' },
-  { value: 2, label: 'Level 2 · 加 i n m d' },
-  { value: 'all', label: '全部' },
-]
 
 export default function Blend() {
   const [words, setWords] = useState<WordItem[]>([])
@@ -69,7 +64,7 @@ export default function Blend() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {LEVELS.map((l) => (
+        {WORD_LEVELS.map((l) => (
           <Button key={String(l.value)} size="sm" variant={level === l.value ? 'default' : 'outline'} onClick={() => setLevel(l.value)}>
             {l.label}
           </Button>

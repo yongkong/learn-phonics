@@ -16,7 +16,8 @@
 ## 网站（v1）
 
 - **字母音图表**：26 个字母 + 例词，点击即发音（Web Speech API，无需音频文件）
-- **拼读机**：CVC 单词逐音点读、慢速合成、释义揭示（配合第 2 课）
+- **拼读机**：CVC 单词逐音点读、慢速合成、释义揭示，6 个级别对应课程进度
+- **拼写挑战**：听词拼字母（segmenting 反向技能），每轮 8 词、成绩入库
 - **听音辨字母练习**：随机出题、即时反馈，可只练已学音素，成绩写入 SQLite
 - **学习排行榜**：伙伴们比拼练习次数与正确率
 - 后端：Hono + `node:sqlite`（Node 22+ 内置，无原生依赖），数据持久化在 `app/data/phonics.db`
@@ -39,9 +40,14 @@ npm run build && npm start   # → http://localhost:3210
 ## 课程路线（= 产品路线）
 
 1. ✅ **第 1 课** 字母名 ≠ 字母音（s a t p）→ 网站 v1：字母音图表 + 练习 + 排行榜
-2. ✅ **第 2 课** i, n, m, d + CVC 拼读 → 网站「拼读机」（/blend）+ 练习范围筛选
-3. 第 3 课 g, o, c, k + 听音写词（segmenting）→ 网站拼写挑战
-4. …（Phase 2–6，详见 `MISSION.md`）
+2. ✅ **第 2 课** i, n, m, d + CVC 拼读 → 网站「拼读机」（/blend）
+3. ✅ **第 3 课** g, o, c, k + 听音写词（segmenting）→ 网站「拼写挑战」（/spell）
+4. ✅ **第 4 课** ck, e, u, r（第一个 digraph）
+5. ✅ **第 5 课** h, b, f, l + 双写 ff/ll/ss
+6. ✅ **第 6 课** j, v, w, x, y, z, q → **26 音全解锁**，配合 Oxford Owl 分级读物
+7. 下一阶段（规划）：digraphs sh / ch / th / ng、长元音（Phase 3–6）
+
+全部课程见 `lessons/`，26 音速查表见 `reference/alphabet-sounds.html`。
 
 ## 学习资源
 

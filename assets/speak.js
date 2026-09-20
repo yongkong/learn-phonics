@@ -47,8 +47,13 @@
     next();
   };
 
-  // 常用音素的 TTS 近似写法（真人示范请用 BBC Sounds of English 校准）
-  window.SOUNDS = { s: "sss", a: "ah", t: "tuh", p: "puh", i: "ih", n: "nnn", m: "mmm", d: "duh" };
+  // 全部 26 个字母音的 TTS 近似写法（真人示范请用 BBC Sounds of English 校准）
+  window.SOUNDS = {
+    s: "sss", a: "ah", t: "tuh", p: "puh", i: "ih", n: "nnn", m: "mmm", d: "duh",
+    g: "guh", o: "oh", c: "kuh", k: "kuh", e: "eh", u: "uh", r: "ruh", h: "huh",
+    b: "buh", f: "fff", l: "lll", j: "juh", v: "vvv", w: "wuh", x: "ks", y: "yuh",
+    z: "zzz", q: "kwuh",
+  };
 
   // 点击 .sound-card / .phoneme-btn / .speak-btn 自动发音：
   //   data-say="文本" data-rate="0.6"；.sound-card/.phoneme-btn 无 data-say 时按字母查 SOUNDS

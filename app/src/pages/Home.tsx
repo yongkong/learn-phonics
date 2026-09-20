@@ -7,7 +7,7 @@ const steps = [
   {
     no: '第 1 课',
     title: '字母名 ≠ 字母音（s a t p）',
-    desc: '已上线：26 个字母音图表 + 听音辨字母练习。配套课程在仓库 lessons/ 目录。',
+    desc: '已上线：26 个字母音图表 + 听音辨字母练习。课程在仓库 lessons/ 目录。',
     done: true,
   },
   {
@@ -19,8 +19,26 @@ const steps = [
   {
     no: '第 3 课',
     title: 'g, o, c, k · 听音写词',
-    desc: '规划中：反向练习 segmenting——听单词拆音素（网站将新增「拼写挑战」）。',
-    done: false,
+    desc: '已上线：课程 lessons/0003 + 网站「拼写挑战」——听词拼字母，练「听音能写」。',
+    done: true,
+  },
+  {
+    no: '第 4 课',
+    title: 'ck, e, u, r · 第一个二字母组合',
+    desc: '已上线：课程 lessons/0004——digraph「两个字母手拉手发一个音」。',
+    done: true,
+  },
+  {
+    no: '第 5 课',
+    title: 'h, b, f, l · 双写字母 ff/ll/ss',
+    desc: '已上线：课程 lessons/0005——Set 5 收官，双写仍发一个音。',
+    done: true,
+  },
+  {
+    no: '第 6 课',
+    title: 'j, v, w, x, y, z, q · 26 音全解锁',
+    desc: '已上线：课程 lessons/0006——完成全部 26 个单字母音素，可以读真分级读物了。',
+    done: true,
   },
 ]
 
@@ -42,7 +60,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Card>
           <CardHeader>
             <CardTitle>🔊 字母音图表</CardTitle>
@@ -53,6 +71,12 @@ export default function Home() {
           <CardHeader>
             <CardTitle>🧩 拼读机</CardTitle>
             <CardDescription>逐音点读、慢速合成，把字母「焊」成单词。</CardDescription>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>✍️ 拼写挑战</CardTitle>
+            <CardDescription>听词拼字母，练「听音能写」的反向技能。</CardDescription>
           </CardHeader>
         </Card>
         <Card>

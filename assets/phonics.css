@@ -162,6 +162,20 @@ th { background: var(--accent-soft); }
 }
 .next-link { display: block; margin-top: 1rem; }
 
+/* 听音写词的「看答案」折叠 */
+details.reveal { margin-top: 0.5em; }
+details.reveal summary {
+  display: inline-block; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 0.3em 1em; font-size: 0.9rem; color: var(--muted);
+}
+details.reveal summary:hover { border-color: var(--accent); color: var(--accent); }
+details.reveal[open] summary { display: none; }
+details.reveal .answer {
+  font-family: Georgia, serif; font-size: 1.4rem; font-weight: 700;
+  color: var(--green); letter-spacing: 0.15em;
+}
+
 @media print {
   body { background: #fff; font-size: 12pt; }
   .sound-card, .phoneme-btn, .btn, .speak-btn { box-shadow: none; }
