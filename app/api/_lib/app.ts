@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
-import { getDb, ready, storage } from './db'
-import { PHONEMES, WORDS } from './content'
+import { getDb, ready, storage } from './db.js'
+import { PHONEMES, WORDS } from './content.js'
 
 // API 应用：音素/词库来自静态内容（任何部署都可用）；
 // 成绩记录依赖存储（本地文件 / Turso，Vercel 未配 Turso 时返回 503）。
