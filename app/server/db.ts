@@ -1,44 +1,26 @@
 import { mkdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { serve } from '@hono/node-server'
-import { serveStatic } from '@hono/node-server/serve-static'
-import { Hono } from 'hono'
-import { DatabaseSync } from 'node:sqlite'
+import { createClient, type Client } from '@libsql/client'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const dataDir = path.join(__dirname, '..', 'data')
-const distDir = path.join(__dirname, '..', 'dist')
-mkdirSync(dataDir, { recursive: true })
 
-const db = new DatabaseSync(path.join(dataDir, 'phonics.db'))
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS phonemes (
-    letter  TEXT PRIMARY KEY,
-    ord     INTEGER NOT NULL,
-    sound   TEXT NOT NULL,
-    say     TEXT NOT NULL,
-    words   TEXT NOT NULL,
-    phase   INTEGER NOT NULL,
-    set_no  INTEGER
-  );
-  CREATE TABLE IF NOT EXISTS progress (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    nickname   TEXT NOT NULL,
-    mode       TEXT NOT NULL,
-    score      INTEGER NOT NULL,
-    total      INTEGER NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
-  CREATE TABLE IF NOT EXISTS words (
-    word    TEXT PRIMARY KEY,
-    letters TEXT NOT NULL,
-    says    TEXT NOT NULL,
-    meaning TEXT NOT NULL,
-    level   INTEGER NOT NULL
-  );
-`)
+// 数据库三模式：
+//   1. 配置了 TURSO_DATABASE_URL → Turso 远程 SQLite（Vercel 生产推荐，数据持久）
+//   2. Vercel 且未配置 → /tmp 文件（实例内存活，冷启动即重置，排行榜仅供演示）
+//   3. 本地开发 → app/data/phonics.db 文件
+const tursoUrl = process.env.TURSO_DATABASE_URL
+let client: Client
+if (tursoUrl) {
+  client = createClient({ url: tursoUrl, authToken: process.env.TURSO_AUTH_TOKEN })
+} else if (process.env.VERCEL) {
+  client = createClient({ url: 'file:/tmp/phonics.db' })
+} else {
+  const dataDir = path.join(__dirname, '..', 'data')
+  mkdirSync(dataDir, { recursive: true })
+  client = createClient({ url: 'file:' + path.join(dataDir, 'phonics.db').replace(/\\/g, '/') })
+}
+export const db = client
 
 // Letters and Sounds (DfE 2007) Phase 2 Set 1-5 + Phase 3 字母集；ord = 教学顺序（SATPIN 优先）
 type Seed = [letter: string, sound: string, say: string, words: string[], phase: number, setNo: number | null]
@@ -70,16 +52,6 @@ const SEED: Seed[] = [
   ['z', '/z/', 'zzz', ['zip', 'zoo', 'buzz'], 3, null],
   ['q', '/kw/', 'kwuh', ['quiz', 'quit', 'queen'], 3, null],
 ]
-
-const { c: phonemeCount } = db.prepare('SELECT COUNT(*) AS c FROM phonemes').get() as { c: number }
-if (phonemeCount === 0) {
-  const ins = db.prepare('INSERT INTO phonemes (letter, ord, sound, say, words, phase, set_no) VALUES (?, ?, ?, ?, ?, ?, ?)')
-  for (const [i, seed] of SEED.entries()) {
-    const [letter, sound, say, words, phase, setNo] = seed
-    ins.run(letter, i, sound, say, JSON.stringify(words), phase, setNo)
-  }
-  console.log(`Seeded ${SEED.length} phonemes.`)
-}
 
 // CVC 词库：level 1-6 按 Letters and Sounds Set 1-5 + Phase 3 字母分级
 type WordSeed = [word: string, letters: string[], meaning: string, level: number]
@@ -173,77 +145,53 @@ const WORDS: WordSeed[] = [
   ['quiz', ['q', 'u', 'i', 'z'], '小测验', 6],
 ]
 
-// 幂等种子：新词自动补进已有数据库，不清空伙伴的历史成绩
-const insWord = db.prepare('INSERT OR IGNORE INTO words (word, letters, says, meaning, level) VALUES (?, ?, ?, ?, ?)')
-for (const [word, letters, meaning, level] of WORDS) {
-  const says = letters.map((l) => SAYS[l] ?? l)
-  insWord.run(word, JSON.stringify(letters), JSON.stringify(says), meaning, level)
-}
+// 初始化（幂等）：建表 + 种子。所有路由先 await ready。
+export const ready = (async () => {
+  await db.executeMultiple(`
+    CREATE TABLE IF NOT EXISTS phonemes (
+      letter  TEXT PRIMARY KEY,
+      ord     INTEGER NOT NULL,
+      sound   TEXT NOT NULL,
+      say     TEXT NOT NULL,
+      words   TEXT NOT NULL,
+      phase   INTEGER NOT NULL,
+      set_no  INTEGER
+    );
+    CREATE TABLE IF NOT EXISTS progress (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      nickname   TEXT NOT NULL,
+      mode       TEXT NOT NULL,
+      score      INTEGER NOT NULL,
+      total      INTEGER NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE TABLE IF NOT EXISTS words (
+      word    TEXT PRIMARY KEY,
+      letters TEXT NOT NULL,
+      says    TEXT NOT NULL,
+      meaning TEXT NOT NULL,
+      level   INTEGER NOT NULL
+    );
+  `)
 
-const app = new Hono()
+  const phonemes = await db.execute('SELECT COUNT(*) AS c FROM phonemes')
+  if (Number(phonemes.rows[0]?.c ?? 0) === 0) {
+    for (const [i, seed] of SEED.entries()) {
+      await db.execute({
+        sql: 'INSERT INTO phonemes (letter, ord, sound, say, words, phase, set_no) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        args: [seed[0], i, seed[1], seed[2], JSON.stringify(seed[3]), seed[4], seed[5]],
+      })
+    }
+  }
 
-app.get('/api/health', (c) => c.json({ ok: true }))
-
-app.get('/api/phonemes', (c) => {
-  const rows = db.prepare('SELECT * FROM phonemes ORDER BY ord').all() as Array<{
-    letter: string; ord: number; sound: string; say: string; words: string; phase: number; set_no: number | null
-  }>
-  return c.json(rows.map((r) => ({ ...r, words: JSON.parse(r.words) as string[] })))
-})
-
-app.post('/api/progress', async (c) => {
-  const body = await c.req.json<Record<string, unknown>>()
-  const nickname = String(body.nickname ?? '').trim().slice(0, 20)
-  const mode = String(body.mode ?? 'listen-letter').slice(0, 30)
-  const score = Math.max(0, Math.min(100, Number(body.score) | 0))
-  const total = Math.max(1, Math.min(100, Number(body.total) | 0))
-  if (!nickname) return c.json({ error: 'nickname required' }, 400)
-  db.prepare('INSERT INTO progress (nickname, mode, score, total) VALUES (?, ?, ?, ?)').run(nickname, mode, score, total)
-  return c.json({ ok: true })
-})
-
-app.get('/api/leaderboard', (c) => {
-  const rows = db.prepare(`
-    SELECT nickname,
-           COUNT(*)              AS sessions,
-           SUM(score)            AS correct,
-           SUM(total)            AS questions,
-           ROUND(100.0 * SUM(score) / SUM(total), 1) AS accuracy,
-           MAX(created_at)       AS last_played
-    FROM progress
-    GROUP BY nickname
-    ORDER BY correct DESC, accuracy DESC
-    LIMIT 20
-  `).all()
-  return c.json(rows)
-})
-
-app.get('/api/words', (c) => {
-  const rows = db.prepare('SELECT * FROM words ORDER BY level, word').all() as Array<{
-    word: string; letters: string; says: string; meaning: string; level: number
-  }>
-  return c.json(rows.map((r) => ({
-    ...r,
-    letters: JSON.parse(r.letters) as string[],
-    says: JSON.parse(r.says) as string[],
-  })))
-})
-
-// 教学内容静态伺服：课程/速查表/共享组件，只暴露这三个目录
-const repoRoot = path.relative(process.cwd(), path.join(__dirname, '..', '..'))
-for (const dir of ['lessons', 'reference', 'assets']) {
-  app.use(`/teach/${dir}/*`, serveStatic({
-    root: repoRoot,
-    rewriteRequestPath: (p) => p.replace(/^\/teach/, ''),
-  }))
-}
-
-// 生产模式：伺服前端构建产物 + SPA 回退
-app.use('*', serveStatic({ root: path.relative(process.cwd(), distDir) || '.' }))
-app.get('*', serveStatic({ path: path.join(distDir, 'index.html') }))
-
-const PORT = Number(process.env.PORT) || 3210
-
-serve({ fetch: app.fetch, port: PORT }, (info) => {
-  console.log(`learn-phonics 运行中 → http://localhost:${info.port}`)
-})
+  // 幂等种子：词少于最新词库时补齐（不清空伙伴的历史成绩）
+  const words = await db.execute('SELECT COUNT(*) AS c FROM words')
+  if (Number(words.rows[0]?.c ?? 0) < WORDS.length) {
+    for (const [word, letters, meaning, level] of WORDS) {
+      await db.execute({
+        sql: 'INSERT OR IGNORE INTO words (word, letters, says, meaning, level) VALUES (?, ?, ?, ?, ?)',
+        args: [word, JSON.stringify(letters), JSON.stringify(letters.map((l) => SAYS[l] ?? l)), meaning, level],
+      })
+    }
+  }
+})()

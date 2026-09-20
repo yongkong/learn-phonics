@@ -4,10 +4,12 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/sync-content.mjs",
     "dev": "vite",
-    "server": "tsx watch server/index.ts",
+    "server": "tsx watch server/main.ts",
+    "prebuild": "node scripts/sync-content.mjs",
     "build": "tsc -b && vite build",
-    "start": "tsx server/index.ts",
+    "start": "tsx server/main.ts",
     "lint": "oxlint",
     "preview": "vite preview"
   },
@@ -15,6 +17,7 @@
     "@base-ui/react": "^1.8.0",
     "@fontsource-variable/geist": "^5.3.0",
     "@hono/node-server": "^2.1.1",
+    "@libsql/client": "^0.18.0",
     "@tailwindcss/vite": "^4.3.3",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.3.0",

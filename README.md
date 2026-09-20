@@ -37,6 +37,39 @@ npm run dev      # 前端开发 :5173（开发时两个都要跑）
 npm run build && npm start   # → http://localhost:3210
 ```
 
+## 部署到 Vercel
+
+> `app/` 已内置 `vercel.json`（SPA 回退）+ `api/[...route].ts`（Hono Serverless 函数）+ 内容同步脚本（课程页随静态构建发布）。构建时无需额外配置。
+
+### 方式 A：CLI（最快）
+
+```bash
+cd app
+npx vercel login          # 浏览器授权一次
+npx vercel link           # 关联/创建项目（Root Directory 保持 app）
+npx vercel --prod         # 部署
+```
+
+### 方式 B：GitHub 集成（推一次发一次）
+
+1. Vercel 控制台 → Add New Project → 导入 `yongkong/learn-phonics`
+2. **Root Directory 设为 `app`**（其余设置已由 vercel.json 提供）
+3. Deploy。之后每次 `git push` 自动重新部署
+
+### 排行榜持久化（推荐，约 3 分钟）
+
+Vercel 是 Serverless，文件系统不持久。排行榜要跨用户保留，需配一个免费的 Turso（libsql 即 SQLite）数据库：
+
+```bash
+# 安装 Turso CLI 后：
+turso db create learn-phonics
+turso db show learn-phonics --url          # → TURSO_DATABASE_URL
+turso db tokens create learn-phonics       # → TURSO_AUTH_TOKEN
+```
+
+在 Vercel 项目 Settings → Environment Variables 添加这两个变量，重新部署即可。
+未配置时网站完全可用（发音/课程/练习均正常），仅排行榜数据不跨实例保留。
+
 ## 课程路线（= 产品路线）
 
 1. ✅ **第 1 课** 字母名 ≠ 字母音（s a t p）→ 网站 v1：字母音图表 + 练习 + 排行榜

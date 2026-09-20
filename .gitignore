@@ -1,6 +1,8 @@
 node_modules/
 dist/
-app/data/*.db
+app/data/
+app/public/teach/
+app/server.log
 *.local
 .DS_Store
 shot-*.png
